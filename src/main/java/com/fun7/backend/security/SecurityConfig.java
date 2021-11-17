@@ -48,16 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .password(passwordEncoder.encode("password"))
                 .authorities(ADMIN.getGrantedAuthorities())
                 .build();
-
-        UserDetails tomUser = User.builder()
-                .username("tom")
-                .password(passwordEncoder.encode("password123"))
-                .authorities(ADMIN.getGrantedAuthorities())
-                .build();
-
+                
         return new InMemoryUserDetailsManager(
                 adminUser,
-                tomUser
         );
 
     }

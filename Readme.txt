@@ -1,16 +1,3 @@
-This solution was made with Java(Spring Boot), and is managed with Maven. 
-
-The way to start the application is to install all dependencies from pom.xml file with:
-
-./mvnw package (from the main directory) or mvn package
-
-And then to start the application:
-
-./mvnw spring-boot:run 
-
-The REST API listens on port 8080 by default.
-Application has predefined in-memory H2 "database" with some users which is loaded on start.
-
 Endpoint for services:
 
 POST - "/services/" (No authorization needed)
@@ -48,3 +35,18 @@ Request body (application/json) :
 
 DELETE "/admin/users/{userId}"
 Response status 200 if user is deleted, otherwise 500
+
+This solution was made with Java(Spring Boot), and is managed with Maven. 
+
+The way to start the application is to install all dependencies from pom.xml file with:
+
+./mvnw package (from the main directory) or mvn package
+
+And then to start the application:
+
+./mvnw spring-boot:run 
+
+The REST API listens on port 8080 by default.
+Application has predefined in-memory H2 "database" with some users which is loaded on start.
+
+For authorization of admins, Basic Auth was used without CSRF Token for simplicity.
