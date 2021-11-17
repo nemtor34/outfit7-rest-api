@@ -2,7 +2,7 @@ package com.fun7.backend.security;
 
 public enum AdminPermission {
     USERS_READ("user:read"),
-    USERS_DELETE("user:delete");
+    USERS_DELETE("user:write");
 
     private final String permission;
 

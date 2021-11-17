@@ -12,14 +12,30 @@ public class User {
   private String e_mail;
   private int experience;
   
-  User(){};
+  public User(){};
   
-  User(String userId, String name, String last_name, String e_mail) {
+  public User(String userId, String name, String last_name, String e_mail) {
 	  this.userId = userId;
 	  this.name = name;
 	  this.last_name = last_name;
 	  this.e_mail = e_mail;
 	  this.experience = 0;
+  }
+  
+  public boolean equals(User user) {
+	  if (this.userId != user.getUserId()) {
+		  return false;
+	  }
+	  if (this.name != user.getName()) {
+		  return false;
+	  }
+	  if (this.last_name != user.getLast_name()) {
+		  return false;
+	  }
+	  if (this.e_mail != user.getE_mail()) {
+		  return false;
+	  }
+	  return true;
   }
   
   public String getUserId() {

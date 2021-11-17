@@ -13,11 +13,11 @@ import com.fun7.backend.users.*;
 import com.fun7.backend.ads.*;
 
 @RestController
-class UserController {
+public class ServiceController {
 
   private final UserRepository repository;
   private final List<String> MULTIPLAYER_COUNTRIES = new ArrayList<String>();
-  UserController(UserRepository repository) {
+  public ServiceController(UserRepository repository) {
     this.repository = repository;
     MULTIPLAYER_COUNTRIES.add("US");
   }
@@ -29,13 +29,7 @@ class UserController {
 	  
 	  if (user.isPresent()) {
 		  //Checking Time in Ljubljana
-		  DateTimeZone Ljubljana = DateTimeZone.forID("Europe/London");
-		  DateTime now = new DateTime(Ljubljana);
-		  if ( now.getDayOfWeek() < 6 ) {
-			  if ( now.getHourOfDay() >= 9 && now.getHourOfDay() < 15) {
-				  result.setUser_support("enabled");
-			  }
-		  }
+		  result.setUser_support(checkUserSupport());
 		  //Checking User Experience
 		  User temp = user.get();
 		  temp.addExperience();
@@ -45,12 +39,28 @@ class UserController {
 			  result.setMultiplayer("enabled");
 		  }
 		  //Getting ads response
-		  String response = AdsClient.get(cc);
-		  Ads ad = new Ads(response);
-		  result.setAds(ad.enabled());
+		  result.setAds(checkAds(cc));
 	  }
 	  
 	  return result;
 	  
+  }
+  
+  public String checkUserSupport() {
+	  DateTimeZone Ljubljana = DateTimeZone.forID("Europe/London");
+	  DateTime now = new DateTime(Ljubljana);
+	  if ( now.getDayOfWeek() < 6 ) {
+		  if ( now.getHourOfDay() >= 9 && now.getHourOfDay() < 15) {
+			  return "enabled";
+		  }
+	  }
+	  return "disabled";
+  }
+  
+  public String checkAds(String cc) {
+	  String response = AdsClient.get(cc);
+	  Ads ad = new Ads(response);
+	  response = ad.enabled();
+	  return response;
   }
 }
