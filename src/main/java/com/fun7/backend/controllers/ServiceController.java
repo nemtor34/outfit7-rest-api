@@ -3,16 +3,20 @@ package com.fun7.backend.controllers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.joda.time.*;
+
 import com.fun7.backend.users.*;
+import com.fun7.backend.ads.*;
 
 @RestController
 class UserController {
 
   private final UserRepository repository;
-  private static final List<String> MULTIPLAYER_COUNTRIES = new ArrayList<String>();
+  private final List<String> MULTIPLAYER_COUNTRIES = new ArrayList<String>();
   UserController(UserRepository repository) {
     this.repository = repository;
     MULTIPLAYER_COUNTRIES.add("US");
@@ -22,11 +26,30 @@ class UserController {
   Service result(@RequestParam(name = "timezone") String zone, @RequestParam(name = "userId") String uid, @RequestParam(name = "cc") String cc) {
 	  Service result = new Service("disabled", "disabled", "disabled");
 	  Optional<User> user = repository.findById(uid);
+	  
 	  if (user.isPresent()) {
+		  //Checking Time in Ljubljana
+		  DateTimeZone Ljubljana = DateTimeZone.forID("Europe/London");
+		  DateTime now = new DateTime(Ljubljana);
+		  if ( now.getDayOfWeek() < 6 ) {
+			  if ( now.getHourOfDay() >= 9 && now.getHourOfDay() < 15) {
+				  result.setUser_support("enabled");
+			  }
+		  }
+		  //Checking User Experience
 		  User temp = user.get();
 		  temp.addExperience();
 		  repository.save(temp);
+		  int exp = temp.getExperience();
+		  if ( exp > 5 && MULTIPLAYER_COUNTRIES.contains(cc)) {
+			  result.setMultiplayer("enabled");
+		  }
+		  //Getting ads response
+		  String response = AdsClient.get(cc);
+		  Ads ad = new Ads(response);
+		  result.setAds(ad.enabled());
 	  }
+	  
 	  return result;
 	  
   }

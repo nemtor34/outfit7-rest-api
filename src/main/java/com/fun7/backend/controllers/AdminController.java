@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.fun7.backend.users.*;
-
 
 @RestController
 class AdminController {
@@ -22,9 +21,9 @@ class AdminController {
     MULTIPLAYER_COUNTRIES.add("US");
   }
   
-  //List all users
   
-  @GetMapping("/admin/users")
+  @GetMapping("/admin/users/")
+  @PreAuthorize("hasAuthority('user:read')")
   List<String> all() {
     return (repository.findAll().stream().map(user -> user.getUserId()).collect(Collectors.toList()));
   }
@@ -32,6 +31,7 @@ class AdminController {
   // User Details
   
   @GetMapping("/admin/users/{id}")
+  @PreAuthorize("hasAuthority('user:read')")
   User one(@PathVariable String id) {
     
     return repository.findById(id)
@@ -41,6 +41,7 @@ class AdminController {
   // Delete User
   
   @DeleteMapping("/admin/users/{id}")
+  @PreAuthorize("hasAuthority('user:delete')")
   void deleteEmployee(@PathVariable String id) {
     repository.deleteById(id);
   }
